@@ -65,6 +65,18 @@ export default class CalendarHeatmap {
     }
   }
 
+  getColorValue (index) {
+    if (index === 0) {
+      return 'No data'
+    } else if (index === 1) {
+      return '<= 0'
+    } else if (index === 5) {
+      return '>= ' + this.max
+    } else {
+      return Math.ceil((this.max * ((index - 1) - 1)) / 3) + ' - ' + Math.ceil((this.max * (index - 1)) / 3)
+    }
+  }
+
   getCountEmptyDaysAtStart () {
     return this.startDate.getDay()
   }

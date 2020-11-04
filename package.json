@@ -19,10 +19,10 @@
   "unpkg": "dist/vue-calendar-heatmap.browser.js",
   "module": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack --config config/webpack.config.dev.js --progress --watch",
+    "dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --config config/webpack.config.dev.js --progress --watch",
     "build": "npm run build:browser && npm run build:common",
-    "build:browser": "cross-env NODE_ENV=production webpack --config config/webpack.config.browser.js --progress --hide-modules",
-    "build:common": "cross-env NODE_ENV=production webpack --config config/webpack.config.common.js --progress --hide-modules",
+    "build:browser": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --config config/webpack.config.browser.js --progress --hide-modules",
+    "build:common": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --config config/webpack.config.common.js --progress --hide-modules",
     "prepublish": "npm run build"
   },
   "devDependencies": {
@@ -43,12 +43,16 @@
     "extract-text-webpack-plugin": "^2.0.0-beta.4",
     "pug": "^2.0.3",
     "pug-loader": "^2.4.0",
+    "vue": "^2.3.0",
     "vue-loader": "^10.0.0",
     "vue-template-compiler": "^2.1.6",
     "webpack": "^2.1.0-beta.28",
+    "webpack-cli": "^4.1.0",
+    "webpack-dev-server": "^3.11.0",
     "webpack-merge": "^1.1.2"
   },
   "dependencies": {
+    "babel-preset-env": "^1.7.0",
     "v-tooltip": "^2.0.0-rc.32"
   }
 }

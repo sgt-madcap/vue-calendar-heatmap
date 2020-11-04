@@ -1,5 +1,8 @@
 <template lang="pug">
-  svg.vch__wrapper(:viewBox="viewbox")
+  svg.vch__wrapper(:viewBox="viewbox" ref="svg_element" :id="svgID")
+      text.temp_label(
+          style="display:none"
+        ) {{ "abc" }}
       g.vch__months__labels__wrapper(:transform="monthsLabelWrapperTransform[position]")
         text.vch__month__label(
           v-for="(month, index) in heatmap.firstFullWeekOfMonths",
@@ -21,24 +24,34 @@
           :y="vertical ? SQUARE_SIZE - SQUARE_BORDER_SIZE : 69"
         ) {{ lo.days[5] }}
 
-      g.vch__legend__wrapper(:transform="legendWrapperTransform[position]")
-        text(
-          :x="vertical ? SQUARE_SIZE * 1.25 : -25"
-          :y="vertical ? 8 : SQUARE_SIZE + 1"
-        ) {{ lo.less }}
-        rect(
+      g.vch__legend__wrapper(:transform="legendWrapperTransform[position]" :key="legendKey")        
+        g(
           v-for="(color, index) in rangeColor",
           :key="index",
-          :style="{ fill: color }",
-          :width="SQUARE_SIZE - SQUARE_BORDER_SIZE",
-          :height="SQUARE_SIZE - SQUARE_BORDER_SIZE",
-          :x="vertical ? SQUARE_SIZE * 1.75 : SQUARE_SIZE * index",
-          :y="vertical ? SQUARE_SIZE * (index + 1) : 5"
+          
         )
-        text(
-          :x="vertical ? SQUARE_SIZE * 1.25 : SQUARE_SIZE * rangeColor.length + 1",
-          :y="vertical ? SQUARE_SIZE * (rangeColor.length + 2) - SQUARE_BORDER_SIZE : SQUARE_SIZE + 1"
-          ) {{ lo.more }}
+          rect(
+            :style="{ fill: color }",
+            :width="SQUARE_SIZE - SQUARE_BORDER_SIZE",
+            :height="SQUARE_SIZE - SQUARE_BORDER_SIZE",
+            :x="vertical ? SQUARE_SIZE * 1.75 : getLegendRectVerticalXInPosition(index)",
+            :y="vertical ? (SQUARE_SIZE * (index + 1)) + ((index == 0 ? 0 : 15) * index) : 5"
+            v-tooltip="heatmap.getColorValue(index)",
+          )
+          text(
+            v-if="isMobile"
+            :x="vertical ? SQUARE_SIZE  : (SQUARE_SIZE - SQUARE_BORDER_SIZE) + 1 + getLegendRectVerticalXInPosition(index)",
+            :y="vertical ? SQUARE_SIZE * (index + 1) + (SQUARE_SIZE * 1.75) + ((index == 0 ? 0 : 15) * index): SQUARE_SIZE + 1"
+            :id="'svg_text_' + index"
+            textLength="24"
+            lengthAdjust="spacingAndGlyphs"
+            ) {{ heatmap.getColorValue(index) }}
+          text(
+            v-else
+            :x="vertical ? SQUARE_SIZE  : (SQUARE_SIZE - SQUARE_BORDER_SIZE) + 1 + getLegendRectVerticalXInPosition(index)",
+            :y="vertical ? SQUARE_SIZE * (index + 1) + (SQUARE_SIZE * 1.75) + ((index == 0 ? 0 : 15) * index): SQUARE_SIZE + 1"
+            :id="'svg_text_' + index"
+            ) {{ heatmap.getColorValue(index) }}
       g.vch__year__wrapper(:transform="yearWrapperTransform")
         g.vch__month__wrapper(
           v-for="(week, weekIndex) in heatmap.calendar",
@@ -96,23 +109,47 @@ export default {
       type: String,
       default: DEFAULT_TOOLTIP_UNIT
     },
-    vertical: {
-      type: Boolean,
-      default: false
-    },
+    // vertical: {
+    //   type: Boolean,
+    //   default: false
+    // },
     noDataText: {
       type: String,
       default: null
     }
   },
-
-  data () {
-    return {
-      now: new Date()
+  watch: {
+    values: function(newVal, oldVal) { // watch it
+        this.legendKey = new Date().getTime()
     }
   },
 
+  data () {
+    return {
+      now: new Date(),
+      vertical:false,
+      legendKey:new Date().getTime()
+    }
+  },
+  mounted() {
+    // Register an event listener when the Vue component is ready
+    window.addEventListener('resize', this.onResize)
+    if (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || $(window).width() < 480 ){
+          this.vertical = true
+    }
+  },
+
+  beforeDestroy() {
+    // Unregister the event listener before destroying this Vue instance
+    window.removeEventListener('resize', this.onResize)
+  },
   computed: {
+    svgID () {
+      return '_' + Math.random().toString(36).substr(2, 9);
+    },
+    isMobile() {
+        return /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    },
     position () {
       return this.vertical ? 'vertical' : 'horizontal'
     },
@@ -151,7 +188,7 @@ export default {
     },
     legendWrapperTransform () {
       return {
-        horizontal: `translate(${this.width[this.position] - (this.SQUARE_SIZE * this.rangeColor.length) - 30}, ${this.heigth[this.position] - this.BOTTOM_SECTION_HEIGTH})`,
+        horizontal: `translate(30, ${this.heigth[this.position] - this.BOTTOM_SECTION_HEIGTH})`,
         vertical: `translate(${this.LEFT_SECTION_WIDTH + (this.SQUARE_SIZE * DAYS_IN_WEEK)}, ${this.TOP_SECTION_HEIGTH})`
       }
     },
@@ -186,12 +223,14 @@ export default {
         if (day.count != null) {
           return {
             content: `<b>${day.count} ${this.tooltipUnit}</b> ${this.lo.on} ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`,
-            delay: { show: 150, hide: 50 }
+            delay: { show: 150, hide: 50 },
+            defaultTrigger: window.innerWidth > 768 ? 'hover focus click' : 'click'
           }
         } else if (this.noDataText) {
           return {
             content: `${this.noDataText}`,
-            delay: { show: 150, hide: 50 }
+            delay: { show: 150, hide: 50 },
+            defaultTrigger: window.innerWidth > 768 ? 'hover focus click' : 'click'
           }
         }
       }
@@ -214,7 +253,43 @@ export default {
       position.x = this.vertical ? 3 : this.SQUARE_SIZE * month.index
       position.y = this.vertical ? (this.SQUARE_SIZE * this.heatmap.weekCount) - (this.SQUARE_SIZE * (month.index)) - (this.SQUARE_SIZE / 4) : this.SQUARE_SIZE - this.SQUARE_BORDER_SIZE
       return position
-    }
+    },
+    getLegendRectVerticalXInPosition(index){
+      var finalX = 0;
+      if (index === 0) {
+        return finalX
+      }
+      var previousTextWidth = this.getTextWidth(this.heatmap.getColorValue(index - 1),"11px Source Sans Pro,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji");
+      finalX += (SQUARE_SIZE + previousTextWidth + 10)
+      finalX += this.getLegendRectVerticalXInPosition(index - 1)
+      return finalX
+    },
+    onResize(event) {
+        var currentVertical = this.vertical;
+        if (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || $(window).width() < 480 ){
+          this.vertical = true
+        }else{
+          this.vertical = false
+        }
+        if (currentVertical != this.vertical){
+          this.$forceUpdate();
+        }
+    },
+    getTempCanvas() {
+      if (this.tempCanvas) {
+        return this.tempCanvas
+      }
+      this.tempCanvas = document.createElement('canvas');
+      return this.tempCanvas;
+    },
+    getTextWidth(text, font) {
+      const canvas = this.getTempCanvas()
+      const context = canvas.getContext('2d');
+
+      context.font = font || getComputedStyle(document.body).font;
+
+      return Math.ceil(context.measureText(text).width);
+    },
   }
 }
 </script>
