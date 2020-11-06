@@ -1,5 +1,5 @@
 <template lang="pug">
-  svg.vch__wrapper(:viewBox="viewbox" ref="svg_element" :id="svgID")
+  svg.vch__wrapper(:viewBox="viewbox" ref="svg_element" :id="svgID" )
       text.temp_label(
           style="display:none"
         ) {{ "abc" }}
@@ -28,7 +28,6 @@
         g(
           v-for="(color, index) in rangeColor",
           :key="index",
-          
         )
           rect(
             :style="{ fill: color }",
@@ -67,7 +66,7 @@
             :height="SQUARE_SIZE - SQUARE_BORDER_SIZE",
             :style="{ fill: rangeColor[day.colorIndex] }",
             v-tooltip="tooltipOptions(day)",
-            @click="$emit('day-click', day)"
+            @click="$emit('day-click', {day,content: returnTooltipContent(day)})"
           )
 </template>
 
@@ -218,19 +217,26 @@ export default {
   },
 
   methods: {
+    returnTooltipContent(day){
+      if (day.count != null) {
+        return `${day.count} ${this.tooltipUnit} ${this.lo.on} ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`
+      }else if (this.noDataText) {
+        return `${this.noDataText}: ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()} `
+      }
+    },
     tooltipOptions (day) {
       if (this.tooltip) {
         if (day.count != null) {
           return {
             content: `<b>${day.count} ${this.tooltipUnit}</b> ${this.lo.on} ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`,
             delay: { show: 150, hide: 50 },
-            defaultTrigger: window.innerWidth > 768 ? 'hover focus click' : 'click'
+            // defaultTrigger: window.innerWidth > 768 ? 'hover focus click' : 'click'
           }
         } else if (this.noDataText) {
           return {
-            content: `${this.noDataText}`,
+            content: `${this.noDataText}: ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`,
             delay: { show: 150, hide: 50 },
-            defaultTrigger: window.innerWidth > 768 ? 'hover focus click' : 'click'
+            // defaultTrigger: window.innerWidth > 768 ? 'hover focus click' : 'click'
           }
         }
       }
