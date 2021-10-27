@@ -1,73 +1,73 @@
 <template lang="pug">
   svg.vch__wrapper(:viewBox="viewbox" ref="svg_element" :id="svgID" )
-      text.temp_label(
-          style="display:none"
-        ) {{ "abc" }}
-      g.vch__months__labels__wrapper(:transform="monthsLabelWrapperTransform[position]")
-        text.vch__month__label(
-          v-for="(month, index) in heatmap.firstFullWeekOfMonths",
-          :x="getMonthLabelPostion(month).x",
-          :y="getMonthLabelPostion(month).y"
-        ) {{ lo.months[month.value] }}
+    text.temp_label(
+      style="display:none"
+    ) {{ "abc" }}
+    g.vch__months__labels__wrapper(:transform="monthsLabelWrapperTransform[position]")
+      text.vch__month__label(
+        v-for="(month, index) in heatmap.firstFullWeekOfMonths",
+        :x="getMonthLabelPostion(month).x",
+        :y="getMonthLabelPostion(month).y"
+      ) {{ lo.months[month.value] }}
 
-      g.vch__days__labels__wrapper(:transform="daysLabelWrapperTransform[position]")
-        text.vch__day__label(
-          :x="vertical ? SQUARE_SIZE * 1 : 0",
-          :y="vertical ? SQUARE_SIZE - SQUARE_BORDER_SIZE : 20"
-        ) {{ lo.days[1] }}
-        text.vch__day__label(
-          :x="vertical ? SQUARE_SIZE * 3 : 0",
-          :y="vertical ? SQUARE_SIZE - SQUARE_BORDER_SIZE : 44"
-        ) {{ lo.days[3] }}
-        text.vch__day__label(
-          :x="vertical ? SQUARE_SIZE * 5 : 0",
-          :y="vertical ? SQUARE_SIZE - SQUARE_BORDER_SIZE : 69"
-        ) {{ lo.days[5] }}
+    g.vch__days__labels__wrapper(:transform="daysLabelWrapperTransform[position]")
+      text.vch__day__label(
+        :x="vertical ? SQUARE_SIZE * 1 : 0",
+        :y="vertical ? SQUARE_SIZE - SQUARE_BORDER_SIZE : 20"
+      ) {{ lo.days[1] }}
+      text.vch__day__label(
+        :x="vertical ? SQUARE_SIZE * 3 : 0",
+        :y="vertical ? SQUARE_SIZE - SQUARE_BORDER_SIZE : 44"
+      ) {{ lo.days[3] }}
+      text.vch__day__label(
+        :x="vertical ? SQUARE_SIZE * 5 : 0",
+        :y="vertical ? SQUARE_SIZE - SQUARE_BORDER_SIZE : 69"
+      ) {{ lo.days[5] }}
 
-      g.vch__legend__wrapper(:transform="legendWrapperTransform[position]" :key="legendKey")        
-        g(
-          v-for="(color, index) in rangeColor",
-          :key="index",
+    g.vch__legend__wrapper(:transform="legendWrapperTransform[position]" :key="legendKey")
+      g(
+        v-for="(color, index) in rangeColor",
+        :key="index",
+      )
+        rect(
+          :style="{ fill: color }",
+          :width="SQUARE_SIZE - SQUARE_BORDER_SIZE",
+          :height="SQUARE_SIZE - SQUARE_BORDER_SIZE",
+          :x="vertical ? SQUARE_SIZE * 1.75 : getLegendRectVerticalXInPosition(index)",
+          :y="vertical ? (SQUARE_SIZE * (index + 1)) + ((index == 0 ? 0 : 15) * index) : 5"
+          v-tooltip="heatmap.getColorValue(index)",
         )
-          rect(
-            :style="{ fill: color }",
-            :width="SQUARE_SIZE - SQUARE_BORDER_SIZE",
-            :height="SQUARE_SIZE - SQUARE_BORDER_SIZE",
-            :x="vertical ? SQUARE_SIZE * 1.75 : getLegendRectVerticalXInPosition(index)",
-            :y="vertical ? (SQUARE_SIZE * (index + 1)) + ((index == 0 ? 0 : 15) * index) : 5"
-            v-tooltip="heatmap.getColorValue(index)",
-          )
-          text(
-            v-if="isMobile"
-            :x="vertical ? SQUARE_SIZE  : (SQUARE_SIZE - SQUARE_BORDER_SIZE) + 1 + getLegendRectVerticalXInPosition(index)",
-            :y="vertical ? SQUARE_SIZE * (index + 1) + (SQUARE_SIZE * 1.75) + ((index == 0 ? 0 : 15) * index): SQUARE_SIZE + 1"
-            :id="'svg_text_' + index"
-            textLength="24"
-            lengthAdjust="spacingAndGlyphs"
-            ) {{ heatmap.getColorValue(index) }}
-          text(
-            v-else
-            :x="vertical ? SQUARE_SIZE  : (SQUARE_SIZE - SQUARE_BORDER_SIZE) + 1 + getLegendRectVerticalXInPosition(index)",
-            :y="vertical ? SQUARE_SIZE * (index + 1) + (SQUARE_SIZE * 1.75) + ((index == 0 ? 0 : 15) * index): SQUARE_SIZE + 1"
-            :id="'svg_text_' + index"
-            ) {{ heatmap.getColorValue(index) }}
-      g.vch__year__wrapper(:transform="yearWrapperTransform")
-        g.vch__month__wrapper(
-          v-for="(week, weekIndex) in heatmap.calendar",
-          :key="weekIndex",
-          :transform="getWeekPosition(weekIndex)"
+        text(
+          v-if="isMobile"
+          :x="vertical ? SQUARE_SIZE  : (SQUARE_SIZE - SQUARE_BORDER_SIZE) + 1 + getLegendRectVerticalXInPosition(index)",
+          :y="vertical ? SQUARE_SIZE * (index + 1) + (SQUARE_SIZE * 1.75) + ((index == 0 ? 0 : 15) * index): SQUARE_SIZE + 1"
+          :id="'svg_text_' + index"
+          textLength="24"
+          lengthAdjust="spacingAndGlyphs"
+        ) {{ heatmap.getColorValue(index) }}
+        text(
+          v-else
+          :x="vertical ? SQUARE_SIZE  : (SQUARE_SIZE - SQUARE_BORDER_SIZE) + 1 + getLegendRectVerticalXInPosition(index)",
+          :y="vertical ? SQUARE_SIZE * (index + 1) + (SQUARE_SIZE * 1.75) + ((index == 0 ? 0 : 15) * index): SQUARE_SIZE + 1"
+          :id="'svg_text_' + index"
+        ) {{ heatmap.getColorValue(index) }}
+    g.vch__year__wrapper(:transform="yearWrapperTransform")
+      g.vch__month__wrapper(
+        v-for="(week, weekIndex) in heatmap.calendar",
+        :key="weekIndex",
+        :transform="getWeekPosition(weekIndex)"
+      )
+        rect.vch__day__square(
+          v-for="(day, dayIndex) in week",
+          v-if="day.date < now"
+          :key="dayIndex",
+          :transform="getDayPosition(dayIndex)"
+          :width="SQUARE_SIZE - SQUARE_BORDER_SIZE",
+          :height="SQUARE_SIZE - SQUARE_BORDER_SIZE",
+          :style="{ fill: rangeColor[day.colorIndex] }",
+          v-tooltip="tooltipOptions(day)",
+          @click="$emit('day-click', {day,content: returnTooltipContent(day)})"
         )
-          rect.vch__day__square(
-            v-for="(day, dayIndex) in week",
-            v-if="day.date < now"
-            :key="dayIndex",
-            :transform="getDayPosition(dayIndex)"
-            :width="SQUARE_SIZE - SQUARE_BORDER_SIZE",
-            :height="SQUARE_SIZE - SQUARE_BORDER_SIZE",
-            :style="{ fill: rangeColor[day.colorIndex] }",
-            v-tooltip="tooltipOptions(day)",
-            @click="$emit('day-click', {day,content: returnTooltipContent(day)})"
-          )
 </template>
 
 <script>
@@ -119,7 +119,7 @@ export default {
   },
   watch: {
     values: function(newVal, oldVal) { // watch it
-        this.legendKey = new Date().getTime()
+      this.legendKey = new Date().getTime()
     }
   },
 
@@ -134,7 +134,7 @@ export default {
     // Register an event listener when the Vue component is ready
     window.addEventListener('resize', this.onResize)
     if (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || $(window).width() < 480 ){
-          this.vertical = true
+      this.vertical = true
     }
   },
 
@@ -147,7 +147,7 @@ export default {
       return '_' + Math.random().toString(36).substr(2, 9);
     },
     isMobile() {
-        return /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      return /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
     },
     position () {
       return this.vertical ? 'vertical' : 'horizontal'
@@ -229,7 +229,7 @@ export default {
       if (this.tooltip) {
         if (day.count != null) {
           return {
-            content: `<b>${day.count} ${this.tooltipUnit}</b> ${this.lo.on} ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`,
+            content: JSON.stringify(day),
             delay: { show: 150, hide: 50 },
             // defaultTrigger: window.innerWidth > 768 ? 'hover focus click' : 'click'
           }
@@ -272,15 +272,15 @@ export default {
       return finalX
     },
     onResize(event) {
-        var currentVertical = this.vertical;
-        if (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || $(window).width() < 480 ){
-          this.vertical = true
-        }else{
-          this.vertical = false
-        }
-        if (currentVertical != this.vertical){
-          this.$forceUpdate();
-        }
+      var currentVertical = this.vertical;
+      if (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || $(window).width() < 480 ){
+        this.vertical = true
+      }else{
+        this.vertical = false
+      }
+      if (currentVertical != this.vertical){
+        this.$forceUpdate();
+      }
     },
     getTempCanvas() {
       if (this.tempCanvas) {
@@ -302,135 +302,135 @@ export default {
 </script>
 
 <style scoped>
-  svg.vch__wrapper {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    line-height: 10px;
-  }
+svg.vch__wrapper {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  line-height: 10px;
+}
 
-  svg.vch__wrapper .vch__months__labels__wrapper text.vch__month__label {
-    font-size: 10px;
-  }
+svg.vch__wrapper .vch__months__labels__wrapper text.vch__month__label {
+  font-size: 10px;
+}
 
-  svg.vch__wrapper .vch__days__labels__wrapper text.vch__day__label,
-  svg.vch__wrapper .vch__legend__wrapper text {
-    font-size: 9px;
-  }
+svg.vch__wrapper .vch__days__labels__wrapper text.vch__day__label,
+svg.vch__wrapper .vch__legend__wrapper text {
+  font-size: 9px;
+}
 
-  svg.vch__wrapper .vch__months__labels__wrapper text.vch__month__label,
-  svg.vch__wrapper .vch__days__labels__wrapper text.vch__day__label,
-  svg.vch__wrapper .vch__legend__wrapper text {
-    fill: #767676;
-  }
+svg.vch__wrapper .vch__months__labels__wrapper text.vch__month__label,
+svg.vch__wrapper .vch__days__labels__wrapper text.vch__day__label,
+svg.vch__wrapper .vch__legend__wrapper text {
+  fill: #767676;
+}
 
-  svg.vch__wrapper rect.vch__day__square:hover {
-    stroke: #555;
-    stroke-width: 1px;
-  }
+svg.vch__wrapper rect.vch__day__square:hover {
+  stroke: #555;
+  stroke-width: 1px;
+}
 
-  svg.vch__wrapper rect.vch__day__square:focus {
-    outline: none;
-  }
+svg.vch__wrapper rect.vch__day__square:focus {
+  outline: none;
+}
 </style>
 
 <style>
-  .vue-tooltip-theme.tooltip {
-    display: block !important;
-    z-index: 10000;
-  }
+.vue-tooltip-theme.tooltip {
+  display: block !important;
+  z-index: 10000;
+}
 
-  .vue-tooltip-theme.tooltip .tooltip-inner {
-    background: rgba(0, 0, 0, .7);
-    border-radius: 3px;
-    color: #ebedf0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    font-size: 12px;
-    line-height: 16px;
-    padding: 14px 10px;
-  }
+.vue-tooltip-theme.tooltip .tooltip-inner {
+  background: rgba(0, 0, 0, .7);
+  border-radius: 3px;
+  color: #ebedf0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+  padding: 14px 10px;
+}
 
-  .vue-tooltip-theme.tooltip .tooltip-inner b {
-    color: white;
-  }
+.vue-tooltip-theme.tooltip .tooltip-inner b {
+  color: white;
+}
 
-  .vue-tooltip-theme.tooltip .tooltip-arrow {
-    width: 0;
-    height: 0;
-    border-style: solid;
-    position: absolute;
-    margin: 5px;
-    border-color: black;
-    z-index: 1;
-  }
+.vue-tooltip-theme.tooltip .tooltip-arrow {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  position: absolute;
+  margin: 5px;
+  border-color: black;
+  z-index: 1;
+}
 
-  .vue-tooltip-theme.tooltip[x-placement^="top"] {
-    margin-bottom: 5px;
-  }
+.vue-tooltip-theme.tooltip[x-placement^="top"] {
+  margin-bottom: 5px;
+}
 
-  .vue-tooltip-theme.tooltip[x-placement^="top"] .tooltip-arrow {
-    border-width: 5px 5px 0 5px;
-    border-left-color: transparent !important;
-    border-right-color: transparent !important;
-    border-bottom-color: transparent !important;
-    bottom: -5px;
-    left: calc(50% - 5px);
-    margin-top: 0;
-    margin-bottom: 0;
-  }
+.vue-tooltip-theme.tooltip[x-placement^="top"] .tooltip-arrow {
+  border-width: 5px 5px 0 5px;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  border-bottom-color: transparent !important;
+  bottom: -5px;
+  left: calc(50% - 5px);
+  margin-top: 0;
+  margin-bottom: 0;
+}
 
-  .vue-tooltip-theme.tooltip[x-placement^="bottom"] {
-    margin-top: 5px;
-  }
+.vue-tooltip-theme.tooltip[x-placement^="bottom"] {
+  margin-top: 5px;
+}
 
-  .vue-tooltip-theme.tooltip[x-placement^="bottom"] .tooltip-arrow {
-    border-width: 0 5px 5px 5px;
-    border-left-color: transparent !important;
-    border-right-color: transparent !important;
-    border-top-color: transparent !important;
-    top: -5px;
-    left: calc(50% - 5px);
-    margin-top: 0;
-    margin-bottom: 0;
-  }
+.vue-tooltip-theme.tooltip[x-placement^="bottom"] .tooltip-arrow {
+  border-width: 0 5px 5px 5px;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  border-top-color: transparent !important;
+  top: -5px;
+  left: calc(50% - 5px);
+  margin-top: 0;
+  margin-bottom: 0;
+}
 
-  .vue-tooltip-theme.tooltip[x-placement^="right"] {
-    margin-left: 5px;
-  }
+.vue-tooltip-theme.tooltip[x-placement^="right"] {
+  margin-left: 5px;
+}
 
-  .vue-tooltip-theme.tooltip[x-placement^="right"] .tooltip-arrow {
-    border-width: 5px 5px 5px 0;
-    border-left-color: transparent !important;
-    border-top-color: transparent !important;
-    border-bottom-color: transparent !important;
-    left: -5px;
-    top: calc(50% - 5px);
-    margin-left: 0;
-    margin-right: 0;
-  }
+.vue-tooltip-theme.tooltip[x-placement^="right"] .tooltip-arrow {
+  border-width: 5px 5px 5px 0;
+  border-left-color: transparent !important;
+  border-top-color: transparent !important;
+  border-bottom-color: transparent !important;
+  left: -5px;
+  top: calc(50% - 5px);
+  margin-left: 0;
+  margin-right: 0;
+}
 
-  .vue-tooltip-theme.tooltip[x-placement^="left"] {
-    margin-right: 5px;
-  }
+.vue-tooltip-theme.tooltip[x-placement^="left"] {
+  margin-right: 5px;
+}
 
-  .vue-tooltip-theme.tooltip[x-placement^="left"] .tooltip-arrow {
-    border-width: 5px 0 5px 5px;
-    border-top-color: transparent !important;
-    border-right-color: transparent !important;
-    border-bottom-color: transparent !important;
-    right: -5px;
-    top: calc(50% - 5px);
-    margin-left: 0;
-    margin-right: 0;
-  }
+.vue-tooltip-theme.tooltip[x-placement^="left"] .tooltip-arrow {
+  border-width: 5px 0 5px 5px;
+  border-top-color: transparent !important;
+  border-right-color: transparent !important;
+  border-bottom-color: transparent !important;
+  right: -5px;
+  top: calc(50% - 5px);
+  margin-left: 0;
+  margin-right: 0;
+}
 
-  .vue-tooltip-theme.tooltip[aria-hidden='true'] {
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity .15s, visibility .15s;
-  }
+.vue-tooltip-theme.tooltip[aria-hidden='true'] {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .15s, visibility .15s;
+}
 
-  .vue-tooltip-theme.tooltip[aria-hidden='false'] {
-    visibility: visible;
-    opacity: 1;
-    transition: opacity .15s;
-  }
+.vue-tooltip-theme.tooltip[aria-hidden='false'] {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity .15s;
+}
 </style>
