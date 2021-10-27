@@ -34,6 +34,7 @@ export default class CalendarHeatmap {
           return {
             date: dDate,
             count: dayValues ? dayValues.count : null,
+            values: dayValues,
             colorIndex: dayValues ? dayValues.colorIndex : 0
           }
         }
