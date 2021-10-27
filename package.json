@@ -1,7 +1,7 @@
 {
   "name": "vue-calendar-heatmap-custom-tooltip",
   "description": "A fork of a calendar heatmap by Rabin Julien julienr114@gmail.com Vuejs component built on SVG, inspired by github's contribution calendar graph",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "author": {
     "name": "Nick Tkachev",
     "email": "125368ap@gmail.com"
