@@ -12,6 +12,7 @@ export default class CalendarHeatmap {
     return this.values.reduce((newValues, day) => {
       newValues[this._keyDayParser(day.date)] = {
         count: day.count,
+        data: day,
         colorIndex: this.getColorIndex(day.count)
       }
       return newValues
