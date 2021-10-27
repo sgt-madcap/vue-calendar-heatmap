@@ -219,7 +219,8 @@ export default {
   methods: {
     returnTooltipContent(day){
       if (day.count != null) {
-        return `${day.count} ${this.tooltipUnit} ${this.lo.on} ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`
+        return JSON.stringify(day)
+        // return `${day.count} ${this.tooltipUnit} ${this.lo.on} ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`
       }else if (this.noDataText) {
         return `${this.noDataText}: ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()} `
       }
