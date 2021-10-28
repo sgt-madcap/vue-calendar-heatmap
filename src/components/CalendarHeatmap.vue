@@ -235,7 +235,7 @@ export default {
       if (this.tooltip) {
         if (day.count != null) {
           return {
-            content: day,
+            content: this.returnTooltipContent(day),
             delay: { show: 150, hide: 50 },
             // defaultTrigger: window.innerWidth > 768 ? 'hover focus click' : 'click'
           }
