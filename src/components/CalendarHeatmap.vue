@@ -228,8 +228,15 @@ export default {
     tooltipOptions (day) {
       if (this.tooltip) {
         if (day.count != null) {
+
+          let contributions = ''
+
+          for (const [key, value] of Object.entries(day.values.items)) {
+            contributions += `${key}: ${value}, `
+          }
+
           return {
-            content: JSON.stringify(day),
+            content: contributions,
             delay: { show: 150, hide: 50 },
             // defaultTrigger: window.innerWidth > 768 ? 'hover focus click' : 'click'
           }
