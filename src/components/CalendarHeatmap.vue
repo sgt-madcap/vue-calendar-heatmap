@@ -234,8 +234,14 @@ export default {
     tooltipOptions (day) {
       if (this.tooltip) {
         if (day.count != null) {
+
+          let contributions = ''
+
+          for (const [key, value] of Object.entries(day.values.items)) {
+            contributions += `${key}: ${value}, `
+          }
           return {
-            content: this.returnTooltipContent(day),
+            content: `${day.count} contributions ${this.lo.on} ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()} : ${contributions}`,
             delay: { show: 150, hide: 50 },
             // defaultTrigger: window.innerWidth > 768 ? 'hover focus click' : 'click'
           }
