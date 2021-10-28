@@ -238,11 +238,13 @@ export default {
           let contributions = ''
 
           day.values.items.forEach((el) => {
-            contributions += `${el.type}: ${el.count}`
+            contributions += `${el.type}: ${el.count} `
           })
 
+
+
           return {
-            content: contributions,
+            content: contributions + `${this.lo.on} ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`,
             delay: { show: 150, hide: 50 },
             // defaultTrigger: window.innerWidth > 768 ? 'hover focus click' : 'click'
           }
