@@ -219,11 +219,13 @@ export default {
   methods: {
     returnTooltipContent(day){
       if (day.count != null) {
-        // let contributions = ''
-        // for (const [key, value] of Object.entries(day.values.items)) {
-        //   contributions += `${key}: ${value}, `
-        // }
-        return JSON.stringify(day.values.items)
+        let contributions = ''
+
+        day.values.items.forEach((el) => {
+          contributions += `${el.type}: ${el.count}`
+        })
+
+        return contributions
         // return `${day.count} ${this.tooltipUnit} ${this.lo.on} ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`
       }else if (this.noDataText) {
         return `${this.noDataText}: ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()} `
