@@ -219,14 +219,8 @@ export default {
   methods: {
     returnTooltipContent(day){
       if (day.count != null) {
-        // return JSON.stringify(day)
-        let contributions = ''
-
-        for (const [key, value] of Object.entries(day.values.items)) {
-           contributions += `${key}: ${value}, `
-        }
-
-        return `${day.count} contributions ${this.lo.on} ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()} : ${contributions}`
+        return JSON.stringify(day)
+        // return `${day.count} ${this.tooltipUnit} ${this.lo.on} ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`
       }else if (this.noDataText) {
         return `${this.noDataText}: ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()} `
       }
@@ -234,14 +228,8 @@ export default {
     tooltipOptions (day) {
       if (this.tooltip) {
         if (day.count != null) {
-
-          let contributions = ''
-
-          for (const [key, value] of Object.entries(day.values.items)) {
-            contributions += `${key}: ${value}, `
-          }
           return {
-            content: `${day.count} contributions ${this.lo.on} ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()} : ${contributions}`,
+            content: day,
             delay: { show: 150, hide: 50 },
             // defaultTrigger: window.innerWidth > 768 ? 'hover focus click' : 'click'
           }
