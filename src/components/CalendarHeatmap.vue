@@ -232,8 +232,15 @@ export default {
     tooltipOptions (day) {
       if (this.tooltip) {
         if (day.count != null) {
+
+          let contributions = ''
+
+          day.values.items.forEach((el) => {
+            contributions += `${el.type}: ${el.count}`
+          })
+
           return {
-            content: JSON.stringify(day.values.items),
+            content: contributions,
             delay: { show: 150, hide: 50 },
             // defaultTrigger: window.innerWidth > 768 ? 'hover focus click' : 'click'
           }
