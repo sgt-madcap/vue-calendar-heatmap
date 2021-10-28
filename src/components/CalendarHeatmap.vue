@@ -222,10 +222,10 @@ export default {
         let contributions = ''
 
         day.values.items.forEach((el) => {
-          contributions += `${el.type}: ${el.count}`
+          contributions += `${el.type}: ${el.count} `
         })
 
-        return contributions
+        return contributions + `${this.lo.on} ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`
         // return `${day.count} ${this.tooltipUnit} ${this.lo.on} ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`
       }else if (this.noDataText) {
         return `${this.noDataText}: ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()} `
