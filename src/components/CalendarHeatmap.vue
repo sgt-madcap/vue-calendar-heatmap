@@ -37,20 +37,6 @@
           :y="vertical ? (SQUARE_SIZE * (index + 1)) + ((index == 0 ? 0 : 15) * index) : 5"
           v-tooltip="heatmap.getColorValue(index)",
         )
-        text(
-          v-if="isMobile"
-          :x="vertical ? SQUARE_SIZE  : (SQUARE_SIZE - SQUARE_BORDER_SIZE) + 1 + getLegendRectVerticalXInPosition(index)",
-          :y="vertical ? SQUARE_SIZE * (index + 1) + (SQUARE_SIZE * 1.75) + ((index == 0 ? 0 : 15) * index): SQUARE_SIZE + 1"
-          :id="'svg_text_' + index"
-          textLength="24"
-          lengthAdjust="spacingAndGlyphs"
-        ) {{ heatmap.getColorValue(index) }}
-        text(
-          v-else
-          :x="vertical ? SQUARE_SIZE  : (SQUARE_SIZE - SQUARE_BORDER_SIZE) + 1 + getLegendRectVerticalXInPosition(index)",
-          :y="vertical ? SQUARE_SIZE * (index + 1) + (SQUARE_SIZE * 1.75) + ((index == 0 ? 0 : 15) * index): SQUARE_SIZE + 1"
-          :id="'svg_text_' + index"
-        ) {{ heatmap.getColorValue(index) }}
     g.vch__year__wrapper(:transform="yearWrapperTransform")
       g.vch__month__wrapper(
         v-for="(week, weekIndex) in heatmap.calendar",
