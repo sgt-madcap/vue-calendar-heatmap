@@ -226,9 +226,6 @@ export default {
           day.values.items.forEach((el) => {
             contributions += `${el.type}: ${el.count} `
           })
-
-
-
           return {
             content: contributions + `${this.lo.on} ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`,
             delay: { show: 150, hide: 50 },
