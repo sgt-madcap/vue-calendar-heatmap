@@ -33,7 +33,7 @@
           :style="{ fill: color }",
           :width="SQUARE_SIZE - SQUARE_BORDER_SIZE",
           :height="SQUARE_SIZE - SQUARE_BORDER_SIZE",
-          :x="vertical ? SQUARE_SIZE * 1.75 : getLegendRectVerticalXInPosition(index)",
+          :x="vertical ? SQUARE_SIZE * 1.75 : SQUARE_SIZE * 1.5",
           :y="vertical ? (SQUARE_SIZE * (index + 1)) + ((index == 0 ? 0 : 15) * index) : 5"
           v-tooltip="heatmap.getColorValue(index)",
         )
