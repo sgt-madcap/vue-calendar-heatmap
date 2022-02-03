@@ -222,14 +222,12 @@ export default {
         if (day.count != null) {
 
           let contributions = ''
+          let totalContributions = 0
 
           day.values.items.forEach((el) => {
             contributions += `${el.type}: ${el.count} `
+            totalContributions = totalContributions + el.count
           })
-
-          let totalContributions = 0
-
-          contributions.forEach((el) => totalContributions = el.count + totalContributions)
 
           return {
             content: `<div><p>${totalContributions} contributions</p><br><p>second line</p></div>`,
