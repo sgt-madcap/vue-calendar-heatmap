@@ -230,7 +230,7 @@ export default {
           })
 
           return {
-            content: `<div><p>${totalContributions} contributions</p><br><p>second line</p></div>`,
+            content: `<div><p>${totalContributions} ${totalContributions > 1 ? 'contributions' : 'contribution' }</p><br><p>${this.lo.on} ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}</p></div>`,
             // content: contributions + `${this.lo.on} ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`,
             delay: { show: 150, hide: 50 },
             // defaultTrigger: window.innerWidth > 768 ? 'hover focus click' : 'click'
