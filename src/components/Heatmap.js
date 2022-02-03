@@ -8,6 +8,7 @@ export default class CalendarHeatmap {
     const threeMonthAgo = new Date(endDate.getFullYear(), endDate.getMonth() - 5, 1)
     const diffTime = Math.abs(threeMonthAgo - endDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    this.diffDays = diffDays
 
     this.startDate = this._shiftDate(endDate, -diffDays)
     this.values = values
@@ -29,7 +30,8 @@ export default class CalendarHeatmap {
   }
 
   get calendar () {
-    let date = this._shiftDate(this.startDate, -this.getCountEmptyDaysAtStart())
+
+    let date = this._shiftDate(this.startDate, -this.diffDays)
     return Array.from({ length: this.weekCount },
       () => Array.from({ length: DAYS_IN_WEEK },
         () => {
