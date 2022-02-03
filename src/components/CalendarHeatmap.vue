@@ -346,7 +346,7 @@ svg.vch__wrapper rect.vch__day__square:focus {
   color: #ebedf0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 12px;
-  line-height: 16px;
+  line-height: 13px;
   padding: 14px 10px;
 }
 
