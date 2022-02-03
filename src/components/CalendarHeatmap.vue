@@ -226,8 +226,13 @@ export default {
           day.values.items.forEach((el) => {
             contributions += `${el.type}: ${el.count} `
           })
+
+          let totalContributions = 0
+
+          contributions.forEach((el) => totalContributions = el.count + totalContributions)
+
           return {
-            content: `<div><h1>Hello</h1><br><p>world</p></div>`,
+            content: `<div><p>${totalContributions} contributions</p><br><p>second line</p></div>`,
             // content: contributions + `${this.lo.on} ${this.lo.months[day.date.getMonth()]} ${day.date.getDate()}, ${day.date.getFullYear()}`,
             delay: { show: 150, hide: 50 },
             // defaultTrigger: window.innerWidth > 768 ? 'hover focus click' : 'click'
