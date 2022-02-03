@@ -4,7 +4,12 @@ export default class CalendarHeatmap {
   constructor (endDate, values, max) {
     this.endDate = this._parseDate(endDate)
     this.max = max || Math.ceil((Math.max(...values.map(day => day.count)) / 5) * 4)
-    this.startDate = this._shiftDate(endDate, -DAYS_IN_ONE_YEAR)
+
+    const threeMonthAgo = new Date(endDate.getFullYear(), endDate.getMonth() - 5, 1)
+    const diffTime = Math.abs(threeMonthAgo - endDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    this.startDate = this._shiftDate(endDate, -diffDays)
     this.values = values
   }
 
